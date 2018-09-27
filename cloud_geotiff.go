@@ -53,7 +53,7 @@ func (ra *GeoTiff) ReadAt(b []byte, off int64) (int, error) {
 		}
 		defer rc.Close()
 
-		n, err := io.ReadFull(rc, ra.buf)
+		_, err := io.ReadFull(rc, ra.buf)
 		if err != nil {
 			return 0, err
 		}
