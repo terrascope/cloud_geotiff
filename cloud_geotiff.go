@@ -15,12 +15,12 @@ type GeoTiff struct {
 	offset int
 }
 
-func NewGeoTiff(bucketName, objectName) (*GeoTiff, error) {
+func NewGeoTiff(bucketName, objectName string) (*GeoTiff, error) {
 	ctx := context.Background()
 
 	client, err := storage.NewClient(ctx)
 	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
+		return nil, err
 	}
 
 	bucket := client.Bucket(bucketName)
