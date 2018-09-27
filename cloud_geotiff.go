@@ -35,7 +35,6 @@ func NewGeoTiff(bucketName, objectName string) (*GeoTiff, error) {
 }
 
 func (ra *GeoTiff) ReadAt(b []byte, off int64) (int, error) {
-	start := time.Now()
 	if ra == nil {
 		return 0, fmt.Errorf("invalid")
 	}
