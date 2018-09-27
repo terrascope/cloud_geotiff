@@ -24,14 +24,14 @@ func NewGeoTiff(bucketName, objectName string) (*GeoTiff, error) {
 	}
 
 	bucket := client.Bucket(bucketName)
-	obj := bucket.Object(fileName)
+	obj := bucket.Object(objectName)
 
 	return &GeoTiff{
 		ctx:    ctx,
 		obj:    obj,
 		buf:    make([]byte, 1024),
 		offset: -1,
-	}
+	}, nil
 }
 
 func (ra *GeoTiff) ReadAt(b []byte, off int64) (int, error) {
