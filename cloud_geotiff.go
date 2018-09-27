@@ -8,14 +8,14 @@ import (
 	"golang.org/x/net/context"
 )
 
-type GeoTiff struct {
+type GeoTiffReader struct {
 	ctx    context.Context
 	obj    *storage.ObjectHandle
 	buf    []byte
 	offset int
 }
 
-func NewGeoTiff(bucketName, objectName string) (*GeoTiff, error) {
+func NewGeoTiffReader(bucketName, objectName string) (*GeoTiffReader, error) {
 	ctx := context.Background()
 
 	client, err := storage.NewClient(ctx)
@@ -26,7 +26,7 @@ func NewGeoTiff(bucketName, objectName string) (*GeoTiff, error) {
 	bucket := client.Bucket(bucketName)
 	obj := bucket.Object(objectName)
 
-	return &GeoTiff{
+	return &GeoTiffReader{
 		ctx:    ctx,
 		obj:    obj,
 		buf:    make([]byte, 1024),
@@ -34,7 +34,7 @@ func NewGeoTiff(bucketName, objectName string) (*GeoTiff, error) {
 	}, nil
 }
 
-func (ra *GeoTiff) ReadAt(b []byte, off int64) (int, error) {
+func (ra *GeoTiffReader) ReadAt(b []byte, off int64) (int, error) {
 	if ra == nil {
 		return 0, fmt.Errorf("invalid")
 	}
@@ -74,7 +74,7 @@ func (ra *GeoTiff) ReadAt(b []byte, off int64) (int, error) {
 	return n, err
 }
 
-func (ra *GeoTiff) Read(b []byte) (int, error) {
+func (ra *GeoTiffReader) Read(b []byte) (int, error) {
 	if ra == nil {
 		return 0, fmt.Errorf("invalid")
 	}
