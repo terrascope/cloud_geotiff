@@ -1,4 +1,4 @@
-package cloud_geotiff
+package gcp_storage
 
 import (
 	"fmt"
@@ -8,14 +8,14 @@ import (
 	"golang.org/x/net/context"
 )
 
-type GeoTiffReader struct {
+type BuffReader struct {
 	ctx    context.Context
 	obj    *storage.ObjectHandle
 	buf    []byte
 	offset int
 }
 
-func NewGeoTiffReader(bucketName, objectName string) (*GeoTiffReader, error) {
+func NewBuffReader(bucketName, objectName string) (*BuffReader, error) {
 	ctx := context.Background()
 
 	client, err := storage.NewClient(ctx)
@@ -26,7 +26,7 @@ func NewGeoTiffReader(bucketName, objectName string) (*GeoTiffReader, error) {
 	bucket := client.Bucket(bucketName)
 	obj := bucket.Object(objectName)
 
-	return &GeoTiffReader{
+	return &BuffReader{
 		ctx:    ctx,
 		obj:    obj,
 		buf:    make([]byte, 1024),
@@ -34,7 +34,7 @@ func NewGeoTiffReader(bucketName, objectName string) (*GeoTiffReader, error) {
 	}, nil
 }
 
-func (ra *GeoTiffReader) ReadAt(b []byte, off int64) (int, error) {
+func (ra *BuffReader) ReadAt(b []byte, off int64) (int, error) {
 	if ra == nil {
 		return 0, fmt.Errorf("invalid")
 	}
@@ -74,7 +74,7 @@ func (ra *GeoTiffReader) ReadAt(b []byte, off int64) (int, error) {
 	return n, err
 }
 
-func (ra *GeoTiffReader) Read(b []byte) (int, error) {
+func (ra *BuffReader) Read(b []byte) (int, error) {
 	if ra == nil {
 		return 0, fmt.Errorf("invalid")
 	}
