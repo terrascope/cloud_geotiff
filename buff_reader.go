@@ -25,6 +25,10 @@ func NewBuffReader(bucketName, objectName string) (*BuffReader, error) {
 
 	bucket := client.Bucket(bucketName)
 	obj := bucket.Object(objectName)
+	_, err = obj.Attrs(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	return &BuffReader{
 		ctx:    ctx,
