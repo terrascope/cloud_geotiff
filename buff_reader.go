@@ -16,6 +16,10 @@ type BuffReader struct {
 }
 
 func NewBuffReader(bucketName, objectName string) (*BuffReader, error) {
+	return NewBuffReaderSized(bucketName, objectName, 1024)
+}
+
+func NewBuffReaderSized(bucketName, objectName string, size int) (*BuffReader, error) {
 	ctx := context.Background()
 
 	client, err := storage.NewClient(ctx)
@@ -25,6 +29,7 @@ func NewBuffReader(bucketName, objectName string) (*BuffReader, error) {
 
 	bucket := client.Bucket(bucketName)
 	obj := bucket.Object(objectName)
+
 	_, err = obj.Attrs(ctx)
 	if err != nil {
 		return nil, err
@@ -33,7 +38,7 @@ func NewBuffReader(bucketName, objectName string) (*BuffReader, error) {
 	return &BuffReader{
 		ctx:    ctx,
 		obj:    obj,
-		buf:    make([]byte, 1024),
+		buf:    make([]byte, size),
 		offset: -1,
 	}, nil
 }
