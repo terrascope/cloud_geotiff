@@ -11,6 +11,7 @@ import (
 type BuffReader struct {
 	ctx    context.Context
 	obj    *storage.ObjectHandle
+	rc     io.ReadCloser
 	buf    []byte
 	offset int
 }
@@ -30,7 +31,7 @@ func NewBuffReaderSized(bucketName, objectName string, size int) (*BuffReader, e
 	bucket := client.Bucket(bucketName)
 	obj := bucket.Object(objectName)
 
-	_, err = obj.Attrs(ctx)
+	rc, err := ra.obj.NewReader(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -38,6 +39,7 @@ func NewBuffReaderSized(bucketName, objectName string, size int) (*BuffReader, e
 	return &BuffReader{
 		ctx:    ctx,
 		obj:    obj,
+		rc:     rc,
 		buf:    make([]byte, size),
 		offset: -1,
 	}, nil
@@ -88,11 +90,5 @@ func (ra *BuffReader) Read(b []byte) (int, error) {
 		return 0, fmt.Errorf("invalid")
 	}
 
-	rc, err := ra.obj.NewReader(ra.ctx)
-	if err != nil {
-		return 0, err
-	}
-	defer rc.Close()
-
-	return rc.Read(b)
+	return ra.rc.Read(b)
 }
