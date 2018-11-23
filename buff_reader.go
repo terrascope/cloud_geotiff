@@ -63,9 +63,10 @@ func (ra *BuffReader) ReadAt(b []byte, off int64) (int, error) {
 		defer rc.Close()
 
 		_, err = io.ReadFull(rc, ra.buf)
-		if err != nil {
+		if err != nil && err != io.ErrUnexpectedEOF {
 			return 0, err
 		}
+
 		ra.offset = int(off)
 		copy(b, ra.buf[:len(b)])
 
