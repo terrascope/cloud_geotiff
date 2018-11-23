@@ -31,7 +31,7 @@ func NewBuffReaderSized(bucketName, objectName string, size int) (*BuffReader, e
 	bucket := client.Bucket(bucketName)
 	obj := bucket.Object(objectName)
 
-	rc, err := ra.obj.NewReader(ctx)
+	rc, err := obj.NewRangeReader(ctx, 0, -1)
 	if err != nil {
 		return nil, err
 	}
